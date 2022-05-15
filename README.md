@@ -39,7 +39,7 @@ Megan et al. [1] compared performance of 5 different network embeddings (DeepWal
 ## Results
 ### Hyperparameter Tuning
 We finetuned hyperparameters (p, q, walk length, learning rate, batch size) for the embedding algorithm (Node2Vec). Our results are derived from the graphs mentioned below: <br>
-
+<center>
 <img src="https://github.com/mginabluebox/idls_final_project/blob/main/graphs/p_train_loss.png" width="600" align="center">
 <img src="https://github.com/mginabluebox/idls_final_project/blob/main/graphs/p_val_mse.png" width="600" align="center">
 <img src="https://github.com/mginabluebox/idls_final_project/blob/main/graphs/q_train_loss.png" width="600" align="center">
@@ -50,7 +50,7 @@ We finetuned hyperparameters (p, q, walk length, learning rate, batch size) for 
 <img src="https://github.com/mginabluebox/idls_final_project/blob/main/graphs/batch_size_val_mse.png" width="800" align="center">
 <img src="https://github.com/mginabluebox/idls_final_project/blob/main/graphs/learning_rate_train_loss.png" width="800" align="center">
 <img src="https://github.com/mginabluebox/idls_final_project/blob/main/graphs/learning_rate_val_mse.png" width="800" align="center">
-
+</center>
 We find that batch size 32 converges to flatter local minima while larger batch sizes converge to steep local minimas. Thus, we select batch size 32 as optimal for training.
 
 ### Data Parallellism
