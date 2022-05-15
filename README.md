@@ -38,6 +38,15 @@ Megan et al. [1] compared performance of 5 different network embeddings (DeepWal
 
 ## Results
 ### Hyperparameter Tuning
+We finetuned hyperparameters (p, q, walk length, learning rate, batch size) for the embedding algorithm (Node2Vec). Our results are derived from the graphs mentioned below:
+![](graphs/p_train_loss.png) ![](graphs/p_val_mse.png)
+![](graphs/q_train_loss.png) ![](graphs/q_val_mse.png)
+![](graphs/walk_train_loss.png) ![](graphs/walk_val_mse.png)
+![](graphs/learning_rate_train_loss.png) ![](graphs/learning_rate_val_mse.png)
+![](graphs/batch_size_train_loss.png) ![](graphs/batch_size_val_mse.png)
+
+We find that batch size 32 converges to flatter local minima while larger batch sizes converge to steep local minimas. Thus, we select batch size 32 as optimal for training.
+
 ### Data Parallellism
 We parallelized training on 1 and 2 RTX8000 and V100 GPUs using PyTorch’s DataParallel. We observed that using more GPUs caused total training time to go up, so the scaling efficiency (Figure X) goes down with 2 GPUs. To understand why, we separately measured **train time** (forward + backward + optimizer step) and **communication time** (data loading and CPU-GPU transfer) (Figure X).
 
