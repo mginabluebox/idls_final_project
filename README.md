@@ -47,7 +47,7 @@ Megan et al. [1] compared performance of 5 different network embeddings (DeepWal
 [3] Ronald E. Robertson et al. “Auditing Partisan Audience Bias within Google Search”. In: Proc. ACM Hum.-Comput. Interact.2.CSCW (Nov. 2018). doi: 10.1145/3274417. url: https://doi.org/10.1145/3274417.
 
 ## Contributors 
-Charlotte Ji 
+[Charlotte Ji](https://github.com/mginabluebox)
 
 Aneri Patel
 
