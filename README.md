@@ -39,7 +39,7 @@ Megan et al. [1] compared performance of 5 different network embeddings (DeepWal
 ## Results
 ### Hyperparameter Tuning
 We finetuned hyperparameters (p, q, walk length, learning rate, batch size) for the embedding algorithm (Node2Vec). Our results are derived from the graphs mentioned below:
-![](graphs/p_train_loss.png) ![](graphs/p_val_mse.png | width=100)
+![](graphs/p_train_loss.png) ![](graphs/p_val_mse.png =250x250)
 ![](graphs/q_train_loss.png) ![](graphs/q_val_mse.png)
 ![](graphs/walk_train_loss.png) ![](graphs/walk_val_mse.png)
 ![](graphs/learning_rate_train_loss.png) ![](graphs/learning_rate_val_mse.png)
