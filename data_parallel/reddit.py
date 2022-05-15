@@ -93,13 +93,13 @@ if __name__ == "__main__":
         for pos_rw, neg_rw in loader:
             optimizer.zero_grad()
 
-            # concatenate along last dimension
-            batch = torch.cat((pos_rw, neg_rw), -1)
+            # concatenate along last dimension and transfer to GPU
+            batch = torch.cat((pos_rw, neg_rw), -1).to(device)
 
             # for calling data parallel, call model.forward
             # for calling forward without dataparallel, call model.module
             train_st = time.time()
-            loss = model(batch.to(device))
+            loss = model(batch)
             loss = loss.sum()/NUM_GPUS
 
             loss.backward()

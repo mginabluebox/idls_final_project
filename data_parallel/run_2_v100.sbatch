@@ -4,13 +4,13 @@
 #SBATCH --cpus-per-task=4
 #SBATCH --time=48:00:00
 #SBATCH --mem=128GB
-#SBATCH --job-name=reddit_n2v
+#SBATCH --job-name=gpu2bs32
 #SBATCH --gres=gpu:v100:2
 #SBATCH --output=./slurm_output/slurm_%j_2_v100.out
 
 module purge 
 
 singularity exec --nv \
-    --overlay overlay-25GB-500K.ext3:ro \
+    --overlay /scratch/tj810/intro-dl-system/overlay-25GB-500K.ext3:ro \
     /scratch/work/public/singularity/cuda11.0-cudnn8-devel-ubuntu18.04.sif \
     /bin/bash -c "source /ext3/env.sh; python reddit.py --gpu=2 --type=v100"
