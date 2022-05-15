@@ -1,4 +1,5 @@
 # Predicting Political Ideology of Large Social Media Networks
+Group 5's final project for CSCI-GA 3033-091 Introduction to Deep Learning System, Spring 2022.
 
 ## Overview 
 In this project, we examine the effectiveness of node embeddings as features in domain ideology scoring, following the work of Megan et al. [1]. Specifically, we use node2vec [2] to embed a Reddit subreddit-to-domain network and evaluate the downstream performance using Robertson et al.'s [3] ideology scores for common domains as the ground truth. 
@@ -27,7 +28,8 @@ Megan et al. [1] compared performance of 5 different network embeddings (DeepWal
     ├── data_parallel                                                 
         ├── run_[1,2]_[v100,rtx8000].sbatch                           # sbatch scripts for submitting jobs on HPC
         ├── reddit.py                                                 # main python script for training 
-        └── node2vec_impl_dp.py                                       # data parallel implementation of pytorch geometric node2vec
+        ├── node2vec_impl_dp.py                                       # data parallel implementation of pytorch geometric node2vec
+        └── data_parallel_analysis.ipynb                              # main python script for training 
     ├── predictor_tuning                                              
         ├── best_performing_model.ipynb                               # train and save model with best performing parameters
         └── classifier_tuning.ipynb                                   # grid search for best predictor using embeddings from best performing model
@@ -37,7 +39,23 @@ Megan et al. [1] compared performance of 5 different network embeddings (DeepWal
 ## Results
 ### Hyperparameter Tuning
 ### Data Parallellism
+We parallelized training on 1 and 2 RTX8000 and V100 GPUs using PyTorch’s DataParallel. We observed that using more GPUs caused total training time to go up, so the scaling efficiency (Figure X) goes down with 2 GPUs. To understand why, we separately measured **train time** (forward + backward + optimizer step) and **communication time** (data loading and CPU-GPU transfer) (Figure X).
+
+![](graphs/scaling_efficiency.png) ![](graphs/train_vs_comm_by_gpu.png)
+
+*Figure X: Scaling efficiency (time to complete 1 iteration with 1 GPU / time to complete 1 iteration with N GPUs) for RTX8000 and V100 vs ideal (left), and train / communication time by GPU (right).*
+
+![](graphs/time_vs_validation_mse.png)
+
+*Figure X: Validation MSE vs total training time for 1 and 2 RTX8000 and V100 GPUs. Epoch X represents #epochs to reach validation MSE of 0.125.*
+
 ### Best Performing Model
+- Best Configuration: p=1, q=1, walk_length=50, batch_size=32, lr=0.0025
+- Test Performance: 0.1262
+
+![](graphs/tsne.png)
+
+*Figure X: We visualized the best performing embeddings for the 9,804 labeled domains using the results of dimensionality reduction with T-SNE and observed certain clusters that are distinctively liberal or conservative.*
 
 ## References
 [1] Megan A Brown et al. “Network Embedding Methods for Large Networks in Political Science”. In: Available at SSRN 3962536 (2021).
