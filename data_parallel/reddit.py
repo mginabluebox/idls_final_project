@@ -12,14 +12,14 @@ import torch_geometric.transforms as T
 from node2vec_impl_dp import Node2Vec
 
 # -- Global Variables --
-NUM_EPOCHS = 100
+NUM_EPOCHS = 30
 BATCH_SIZE = 32
 P=1
 Q=1
 WALK=50
 LR=0.0025
 SAVE_PATH = 'results/'
-DATA_PATH = '../data/'
+DATA_PATH = './'
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 if __name__ == "__main__":
@@ -37,15 +37,19 @@ if __name__ == "__main__":
         reddit_dict = json.load(f)
 
     # read reddit s2d as a Data object in pytorch geometric
+    ## read the entire dataset in memory as a pandas dataframe
     df = pd.read_csv(f'{DATA_PATH}reddit_subreddit_to_domain__gt-01-urls.csv', header=None)
+    
+    ## extract source and target nodes and map to corresponding integer indices
     source_nodes = df.iloc[:,0].apply(lambda x: reddit_dict[x]).values.tolist()
     target_nodes = df.iloc[:,1].apply(lambda x: reddit_dict[x]).values.tolist()
     num_nodes = len(set(source_nodes).union(set(target_nodes)))
     weight = df.iloc[:,2].values.tolist()
+
+    ## convert to pytorch geometric Data object
     edge_index = torch.tensor([source_nodes, target_nodes])
     edge_attr = torch.tensor(weight)[:,None]
     data = Data(edge_index=edge_index, edge_attr=edge_attr)
-
     data.num_nodes = num_nodes
     transform = T.ToUndirected()
     data = transform(data)
@@ -77,8 +81,15 @@ if __name__ == "__main__":
     optimizer = torch.optim.SparseAdam(list(model.parameters()), lr=LR)
     
     def train():
+        """
+        Train node2vec batch by batch using postive and negative samples from loader.
+        Returns training loss (log-likelihood).
+        """
         model.train()
         total_loss = 0
+
+        fw_time = 0.0
+        st = time.time()
         for pos_rw, neg_rw in loader:
             optimizer.zero_grad()
 
@@ -87,16 +98,23 @@ if __name__ == "__main__":
 
             # for calling data parallel, call model.forward
             # for calling forward without dataparallel, call model.module
+            train_st = time.time()
             loss = model(batch.to(device))
             loss = loss.sum()/NUM_GPUS
 
             loss.backward()
             optimizer.step()
             total_loss += loss.item()
-        return total_loss / len(loader)
+            fw_time += time.time() - train_st
+
+        return total_loss / len(loader), fw_time, time.time() - st
 
     @torch.no_grad()
     def test():
+        """
+        Evaluate embedding on downstream ideology scoring task using default predictor (Ridge).
+        Returns train and validation MSE.
+        """
         model.eval()
         z = model.module()
 
@@ -116,7 +134,7 @@ if __name__ == "__main__":
         os.remove(f'{SAVE_PATH}{TYPE}_{NUM_GPUS_STR}_log.txt')
     
     with open(f'{SAVE_PATH}{TYPE}_{NUM_GPUS_STR}_log.txt', 'a') as f:
-        f.write(f'Loss,Train MSE,Val MSE,Total Time,Train Time,Val Time\n')
+        f.write(f'Loss,Train MSE,Val MSE,Total Time,Train Time\n')
 
     loss_hist = []
     train_mse_hist = []
@@ -124,25 +142,19 @@ if __name__ == "__main__":
     time_hist = []
     train_time_hist = []
     val_time_hist = []
-    start_time = time.time()
     for epoch in range(1, NUM_EPOCHS):
         
         # -- Train -- #
-        st_train = time.time()
-        loss = train()
-        train_time = time.time() - st_train
+        loss, train_time, total_time = train()
 
         # -- Validation -- #
-        st_val = time.time()
         train_mse, val_mse = test()
-        val_time = time.time() - st_val
 
-        end_time = time.time()
-        print(f'Epoch: {epoch:02d}, Loss: {loss:.4f}, Train MSE: {train_mse:.4f}, Val MSE: {val_mse:.4f}, Total Time: {(end_time-start_time)/60:.2f} mins, Train time: {train_time/60:.2f} mins, Val Time: {val_time/60:.2f} mins')
+        print(f'Epoch: {epoch:02d}, Loss: {loss:.4f}, Train MSE: {train_mse:.4f}, Val MSE: {val_mse:.4f}, Total Time: {total_time/60:.2f} mins, Train time: {train_time/60:.2f} mins')
         
         # logging
         with open(f'{SAVE_PATH}{TYPE}_{NUM_GPUS_STR}_log.txt', 'a') as f:
-            f.write(f'{str(loss)},{str(train_mse)},{str(val_mse)},{str(end_time-start_time)},{str(train_time)},{str(val_time)}\n')
+            f.write(f'{str(loss)},{str(train_mse)},{str(val_mse)},{str(end_time-start_time)},{str(train_time)}\n')
 
         # add to history
         loss_hist.append(loss)
@@ -165,6 +177,5 @@ if __name__ == "__main__":
     np.save(f'{SAVE_PATH}{TYPE}_{NUM_GPUS_STR}_val.npy',val_mse_hist)
     np.save(f'{SAVE_PATH}{TYPE}_{NUM_GPUS_STR}_total_time.npy',time_hist)
     np.save(f'{SAVE_PATH}{TYPE}_{NUM_GPUS_STR}_train_time.npy',train_time_hist)
-    np.save(f'{SAVE_PATH}{TYPE}_{NUM_GPUS_STR}_val_time.npy',val_time_hist)
 
     torch.save(model.state_dict(), f'{SAVE_PATH}{TYPE}_{NUM_GPUS_STR}.pth')

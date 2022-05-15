@@ -1,3 +1,8 @@
+"""
+Adapted from https://github.com/ankur6ue/node2vec_dataparallel/blob/master/node2vec_impl_dp.py
+Modified the code for new pytorch geometric version.
+"""
+
 import torch
 from torch.nn import Embedding
 from torch.utils.data import DataLoader
