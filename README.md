@@ -3,6 +3,7 @@ Group 5's final project for CSCI-GA 3033-091 Introduction to Deep Learning Syste
 
 ## Contributors 
 [Charlotte Ji](https://github.com/mginabluebox)
+
 [Aneri Patel](https://github.com/anerip98)
 
 ## Overview 
