@@ -31,6 +31,7 @@ Megan et al. [1] compared performance of 5 different network embeddings (DeepWal
         ├── reddit_index.json                                         # map from domain url to integer index
         ├── reddit_subreddit_to_domain__gt-01-urls.csv                # training network
         └── robertson_et_al.csv                                       # domain ideology scores for use as labels
+    ├── graphs                                                        
     ├── data_parallel                                                 
         ├── run_[1,2]_[v100,rtx8000].sbatch                           # sbatch scripts for submitting jobs on HPC
         ├── reddit.py                                                 # main python script for training
@@ -39,12 +40,12 @@ Megan et al. [1] compared performance of 5 different network embeddings (DeepWal
     ├── predictor_tuning                                              
         ├── best_performing_model.ipynb                               # train and save model with best performing parameters
         └── classifier_tuning.ipynb                                   # grid search for best predictor using embeddings from best performing model
-    ├── embedder_tuning                                              
+    └── embedder_tuning                                              
         ├──embed_batch_size.ipynb                                     # tuning for batch size
         ├──embed_learning_rate.ipynb                                  # tuning for learning rate
         ├──embed_p.ipynb                                              # tuning for p
         ├──embed_q.ipynb                                              # tuning for q
-        ├──embed_walk.ipynb                                           # tuning for walk
+        └──embed_walk.ipynb                                           # tuning for walk
 
 ## Examples
 
@@ -66,15 +67,15 @@ We finetuned hyperparameters (p, q, walk length, learning rate, batch size) for 
 We find that batch size 32 converges to flatter local minima while larger batch sizes converge to steep local minimas. Thus, we select batch size 32 as optimal for training.
 
 ### Data Parallellism
-We parallelized training on 1 and 2 RTX8000 and V100 GPUs using PyTorch’s DataParallel. We observed that using more GPUs caused total training time to go up, so the scaling efficiency (Figure X) goes down with 2 GPUs. To understand why, we separately measured **train time** (forward + backward + optimizer step) and **communication time** (data loading and CPU-GPU transfer) (Figure X).
+We parallelized training on 1 and 2 RTX8000 and V100 GPUs using PyTorch’s DataParallel. We observed that using more GPUs caused total training time to go up, so the scaling efficiency (Figure 1) goes down with 2 GPUs. To understand why, we separately measured **train time** (forward + backward + optimizer step) and **communication time** (data loading and CPU-GPU transfer) (Figure 1).
 
 ![](graphs/scaling_efficiency.png) ![](graphs/train_vs_comm_by_gpu.png)
 
-*Figure X: Scaling efficiency (time to complete 1 iteration with 1 GPU / time to complete 1 iteration with N GPUs) for RTX8000 and V100 vs ideal (left), and train / communication time by GPU (right).*
+*Figure 1: Scaling efficiency (time to complete 1 iteration with 1 GPU / time to complete 1 iteration with N GPUs) for RTX8000 and V100 vs ideal (left), and train / communication time by GPU (right).*
 
 ![](graphs/time_vs_validation_mse.png)
 
-*Figure X: Validation MSE vs total training time for 1 and 2 RTX8000 and V100 GPUs. Epoch X represents #epochs to reach validation MSE of 0.125.*
+*Figure 2: Validation MSE vs total training time for 1 and 2 RTX8000 and V100 GPUs. Epoch X represents #epochs to reach validation MSE of 0.125.*
 
 ### Best Performing Model
 - Best Configuration: p=1, q=1, walk_length=50, batch_size=32, lr=0.0025
@@ -82,7 +83,7 @@ We parallelized training on 1 and 2 RTX8000 and V100 GPUs using PyTorch’s Data
 
 ![](graphs/tsne.png)
 
-*Figure X: We visualized the best performing embeddings for the 9,804 labeled domains using the results of dimensionality reduction with T-SNE and observed certain clusters that are distinctively liberal or conservative.*
+*Figure 3: We visualized the best performing embeddings for the 9,804 labeled domains using the results of dimensionality reduction with T-SNE and observed certain clusters that are distinctively liberal or conservative.*
 
 ## References
 [1] Megan A Brown et al. “Network Embedding Methods for Large Networks in Political Science”. In: Available at SSRN 3962536 (2021).
