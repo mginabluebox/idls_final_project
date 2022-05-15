@@ -1,12 +1,17 @@
 # Predicting Political Ideology of Large Social Media Networks
 Group 5's final project for CSCI-GA 3033-091 Introduction to Deep Learning System, Spring 2022.
 
+## Contributors 
+[Charlotte Ji](https://github.com/mginabluebox)
+[Aneri Patel](https://github.com/anerip98)
+
 ## Overview 
 In this project, we examine the effectiveness of node embeddings as features in domain ideology scoring, following the work of Megan et al. [1]. Specifically, we use node2vec [2] to embed a Reddit subreddit-to-domain network and evaluate the downstream performance using Robertson et al.'s [3] ideology scores for common domains as the ground truth. 
 
 Megan et al. [1] compared performance of 5 different network embeddings (DeepWalk, node2vec, LINE, SINE, GraphSAGE) in ideology scoring tasks on both Reddit and Twitter networks. They found that LINE outperformed other methods in domain ideology scoring for the Reddit subreddit-to-domain network. However, only default hyperparameters were evaluated for each embedding method, although some methods require careful tuning to maximize their performance. In particular, we are interested in exploring node2vec's [2] potential to achieve a better performance on this task, since it performs differently with different random walk lengths and exploration-exploitation ratio.
 
 ## Experiment Design 
+<img src="https://github.com/mginabluebox/idls_final_project/blob/main/images/experiment_design.png" align="center">
 ### Basic Training Framework
 - Node2vec is trained unsupervised on the Reddit subreddit to domain dataset. The dataset contains 1,000,161 edges (subreddit-domain pairs) and 300,353 nodes. 
 - The downstream task for the embeddings is to predict the ideology of a domain node. We have ideology scores for 9,804 out of domains in the Reddit dataset for evaluation. 
@@ -84,8 +89,3 @@ We parallelized training on 1 and 2 RTX8000 and V100 GPUs using PyTorch’s Data
 [2] Aditya Grover, Jure Leskovec. "node2vec: Scalable Feature Learning for Networks". KDD : Proceedings. International Conference on Knowledge Discovery & Data Mining. 2016: 855–864. arXiv:1607.00653  (2016)
 
 [3] Ronald E. Robertson et al. “Auditing Partisan Audience Bias within Google Search”. In: Proc. ACM Hum.-Comput. Interact.2.CSCW (Nov. 2018). doi: 10.1145/3274417. url: https://doi.org/10.1145/3274417.
-
-## Contributors 
-[Charlotte Ji](https://github.com/mginabluebox)
-
-[Aneri Patel](https://github.com/anerip98)
