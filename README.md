@@ -20,15 +20,17 @@ Megan et al. [1] compared performance of 5 different network embeddings (DeepWal
 
 ## Repo Structure
     .
-    ├── data                                                          # training and evaluation data
+    ├── data                                                          
         ├── reddit_index.json                                         # map from domain url to integer index
         ├── reddit_subreddit_to_domain__gt-01-urls.csv                # training network
         └── robertson_et_al.csv                                       # domain ideology scores for use as labels
-    ├── data_parallel                                                 # code for data parallel experiments 
+    ├── data_parallel                                                 
         ├── run_[1,2,4]_v100.sbatch                                   # sbatch scripts for submitting jobs on HPC
         ├── reddit.py                                                 # main python script for training 
         └── node2vec_impl_dp.py                                       # data parallel implementation of pytorch geometric node2vec
-    ├── predictor_tuning
+    ├── predictor_tuning                                              
+        ├── best_performing_model.ipynb                               # train and save model with best performing parameters
+        └── classifier_tuning.ipynb                                   # grid search for best predictor using embeddings from best performing model
     
 ## Examples
 
