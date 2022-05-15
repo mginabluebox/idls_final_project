@@ -12,6 +12,7 @@ Megan et al. [1] compared performance of 5 different network embeddings (DeepWal
 
 ## Experiment Design 
 <img src="https://github.com/mginabluebox/idls_final_project/blob/main/images/experiment_design.png" align="center">
+
 ### Basic Training Framework
 - Node2vec is trained unsupervised on the Reddit subreddit to domain dataset. The dataset contains 1,000,161 edges (subreddit-domain pairs) and 300,353 nodes. 
 - The downstream task for the embeddings is to predict the ideology of a domain node. We have ideology scores for 9,804 out of domains in the Reddit dataset for evaluation. 
