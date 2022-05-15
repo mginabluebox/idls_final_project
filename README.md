@@ -25,7 +25,7 @@ Megan et al. [1] compared performance of 5 different network embeddings (DeepWal
         ├── reddit_subreddit_to_domain__gt-01-urls.csv                # training network
         └── robertson_et_al.csv                                       # domain ideology scores for use as labels
     ├── data_parallel                                                 
-        ├── run_[1,2,4]_v100.sbatch                                   # sbatch scripts for submitting jobs on HPC
+        ├── run_[1,2]_[v100,rtx8000].sbatch                           # sbatch scripts for submitting jobs on HPC
         ├── reddit.py                                                 # main python script for training 
         └── node2vec_impl_dp.py                                       # data parallel implementation of pytorch geometric node2vec
     ├── predictor_tuning                                              
