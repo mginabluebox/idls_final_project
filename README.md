@@ -27,13 +27,19 @@ Megan et al. [1] compared performance of 5 different network embeddings (DeepWal
         └── robertson_et_al.csv                                       # domain ideology scores for use as labels
     ├── data_parallel                                                 
         ├── run_[1,2]_[v100,rtx8000].sbatch                           # sbatch scripts for submitting jobs on HPC
-        ├── reddit.py                                                 # main python script for training 
+        ├── reddit.py                                                 # main python script for training
         ├── node2vec_impl_dp.py                                       # data parallel implementation of pytorch geometric node2vec
-        └── data_parallel_analysis.ipynb                              # main python script for training 
+        └── data_parallel_analysis.ipynb                              # main python script for training
     ├── predictor_tuning                                              
         ├── best_performing_model.ipynb                               # train and save model with best performing parameters
         └── classifier_tuning.ipynb                                   # grid search for best predictor using embeddings from best performing model
-    
+    ├── embedder_tuning                                              
+        ├──embed_batch_size.ipynb                                     # tuning for batch size
+        ├──embed_learning_rate.ipynb                                  # tuning for learning rate
+        ├──embed_p.ipynb                                              # tuning for p
+        ├──embed_q.ipynb                                              # tuning for q
+        ├──embed_walk.ipynb                                           # tuning for walk
+
 ## Examples
 
 ## Results
