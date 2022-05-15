@@ -10,13 +10,13 @@ Megan et al. [1] compared performance of 5 different network embeddings (DeepWal
 - Node2vec is trained unsupervised on the Reddit subreddit to domain dataset. The dataset contains 1,000,161 edges (subreddit-domain pairs) and 300,353 nodes. 
 - The downstream task for the embeddings is to predict the ideology of a domain node. We have ideology scores for 9,804 out of domains in the Reddit dataset for evaluation. 
 - Following [1], we use domain ideology scores from Robertson et al.'s [3] paper. To monitor the embedding performance on downstream task, we split the evaluation domains into train (64%), validation (16%) and test (20%). 
-- In each epoch of training, we train a predictor on train and report the mean squared error on both train and validation. We evaluate Ridge Regression, Random Forest and Gradient Boosting as predictors.
+- In each epoch of training, we train a predictor on train and report the mean squared error on both train and validation. 
 
 ### Experiment Framework
 - First, we tune for the best node2vec parameters one by one, controlling for other parameters. We early stop at epoch 30 to trade computation resources per experiment (B) for more experiments (n). The model parameters include p, q (which control how fast the random walk explores and leaves the neighborhood of starting node), and random walk length. We also tune learning rate and batch size.
-- With the best performing parameters, we evaluate the effectiveness of data parallelism by measuring training time with 1, 2 and 4 GPUs.
+- With the best performing parameters, we evaluate the effectiveness of data parallelism by measuring train time vs communication time with 1 and 2 GPUs.
 - We obtain the best performing node2vec model by training for a longer epoch (100).
-- With the best performing model, we tune the respective parameters for the 3 types of predictors and identify the best predictor. We tune alpha for Ridge, n_estimators for RF, and n_estimator & learning rate for GB.
+- With the best performing model, we tune the respective parameters for the 3 types of predictors and identify the best predictor. We evaluate Ridge Regression, Random Forest and Gradient Boosting as predictors, and tune alpha for Ridge, n_estimators for RF, and n_estimator & learning rate for GB.
 
 ## Repo Structure
     .
@@ -35,7 +35,7 @@ Megan et al. [1] compared performance of 5 different network embeddings (DeepWal
 ## Examples
 
 ## Results
-### Hyperparameter Tuning 
+### Hyperparameter Tuning
 ### Data Parallellism
 ### Best Performing Model
 
